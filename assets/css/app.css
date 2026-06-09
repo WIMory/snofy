@@ -1,359 +1,480 @@
 /* ============================================
-   足迹地球 App样式 (地图版)
+   足迹地球 App - iOS 风格
    ============================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+
 :root {
+  /* iOS System Colors */
+  --ios-blue: #007AFF;
+  --ios-red: #FF3B30;
+  --ios-orange: #FF9500;
+  --ios-yellow: #FFCC00;
+  --ios-green: #34C759;
+  --ios-teal: #5AC8FA;
+  --ios-indigo: #5856D6;
+  --ios-purple: #AF52DE;
+  --ios-pink: #FF2D55;
+  --ios-gray: #8E8E93;
+  --ios-gray2: #AEAEB2;
+  --ios-gray3: #C7C7CC;
+  --ios-gray4: #D1D1D6;
+  --ios-gray5: #E5E5EA;
+  --ios-gray6: #F2F2F7;
+  --ios-bg: #F2F2F7;
+  --ios-card: #FFFFFF;
+  --ios-text: #000000;
+  --ios-text-secondary: #3C3C43;
+  --ios-text-tertiary: #8E8E93;
+  --ios-separator: rgba(60,60,67,0.12);
+  --ios-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --ios-shadow-lg: 0 4px 16px rgba(0,0,0,0.1);
+
+  /* Brand */
   --primary: #1E3A5F;
-  --primary-light: #2C5282;
-  --accent: #F6AD55;
-  --bg: #F0F4F8;
-  --bg-white: #FFFFFF;
-  --text: #1E293B;
-  --text-secondary: #64748B;
-  --text-light: #94A3B8;
-  --border: #E2E8F0;
-  --success: #10B981;
-  --danger: #EF4444;
   --copper: #CD7F32;
-  --silver: #C0C0C0;
-  --gold: #FFD700;
-  --nav-height: 60px;
+  --silver: #A8A8A8;
+  --gold: #D4A017;
+
+  --nav-height: 83px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body {
-  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  background: var(--bg); color: var(--text);
-  -webkit-text-size-adjust: 100%; overflow: hidden;
+  font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  background: var(--ios-bg); color: var(--ios-text);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
   height: 100%; width: 100%;
 }
+
 a { color: inherit; text-decoration: none; }
+button { font-family: inherit; border: none; background: none; cursor: pointer; }
 
-#app { width: 100%; height: 100dvh; display: flex; flex-direction: column; position: relative; }
+/* ============================================
+   APP SHELL
+   ============================================ */
+#app { width: 100%; height: 100dvh; display: flex; flex-direction: column; background: var(--ios-bg); }
 
-/* ---- Pages ---- */
+/* ============================================
+   PAGES
+   ============================================ */
 .page {
   display: none; flex-direction: column;
   height: calc(100dvh - var(--nav-height));
-  overflow-y: auto; background: var(--bg);
+  overflow-y: auto; background: var(--ios-bg);
+  -webkit-overflow-scrolling: touch;
 }
 .page.active { display: flex; }
 
-/* ---- Header ---- */
+/* ============================================
+   PAGE HEADER (iOS Large Title)
+   ============================================ */
 .page-header {
+  padding: 12px 16px 8px;
+  background: var(--ios-bg);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px; background: var(--bg-white);
-  border-bottom: 1px solid var(--border);
   position: sticky; top: 0; z-index: 100;
   flex-shrink: 0;
 }
-.logo-text { font-weight: 700; font-size: 1rem; color: var(--primary); }
-.header-right { display: flex; gap: 6px; }
-.btn-2d3d {
-  padding: 4px 10px; font-size: 0.72rem; border-radius: 6px;
-  background: var(--bg); color: var(--text-secondary); cursor: pointer;
-  border: 1px solid var(--border);
+.header-title {
+  font-size: 1.17rem; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--ios-text);
 }
-.btn-2d3d.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-.icon-btn { font-size: 1.2rem; cursor: pointer; }
-.back-btn { font-size: 0.95rem; color: var(--primary); cursor: pointer; }
-.cancel-btn { font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; }
-.page-title { font-weight: 600; font-size: 0.95rem; }
-.publish-btn {
-  padding: 6px 16px; background: var(--primary); color: #fff;
-  border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+.header-right { display: flex; gap: 8px; align-items: center; }
+.header-btn {
+  font-size: 0.93rem; color: var(--ios-blue); font-weight: 500;
+  padding: 4px 0;
 }
 
-/* ---- 足迹页：地图 ---- */
-.mode-tabs {
-  display: flex; background: var(--bg-white); border-bottom: 1px solid var(--border);
+/* ============================================
+   SEGMENTED CONTROL (iOS Style Tabs)
+   ============================================ */
+.segment-wrap {
+  padding: 8px 16px0;
+  background: var(--ios-bg);
   flex-shrink: 0;
 }
-.mode-tabs .tab {
-  flex: 1; text-align: center; padding: 10px 4px;
-  font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;
-  border-bottom: 2px solid transparent;
+.segment {
+  display: flex; background: rgba(118,118,128,0.12);
+  border-radius: 9px; padding: 2px;
 }
-.mode-tabs .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+.segment .seg-btn {
+  flex: 1; text-align: center; padding: 7px 0;
+  font-size: 0.8rem; font-weight: 500; color: var(--ios-text-secondary);
+  border-radius: 7px; transition: all 0.2s;
+}
+.segment .seg-btn.active {
+  background: var(--ios-card); color: var(--ios-text);
+  box-shadow: var(--ios-shadow);
+}
 
+/* ============================================
+   MAP AREA
+   ============================================ */
 .map-wrapper {
-  flex: 1; position: relative; overflow: hidden; min-height: 0;
-  background: #e8f4fd;
+  flex: 1; position: relative; min-height: 0;
+  background: #D1D3D8;
 }
-
 .map-container { width: 100%; height: 100%; }
 
-/* Leaflet 自定义样式 */
-.leaflet-container {
-  font-family: inherit !important;
-  background: #e8f4fd;
-}
+/* Leaflet overrides */
+.leaflet-container { font-family: inherit !important; background: #D1D3D8 !important; }
 .leaflet-control-zoom {
   border: none !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
   border-radius: 12px !important;
   overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
 }
 .leaflet-control-zoom a {
-  width: 36px !important; height: 36px !important;
-  line-height: 36px !important;
-  font-size: 16px !important;
-  color: var(--primary) !important;
-  background: #fff !important;
+  width: 32px !important; height: 32px !important;
+  line-height: 32px !important; font-size: 15px !important;
+  color: var(--ios-text) !important; background: var(--ios-card) !important;
   border: none !important;
 }
-.leaflet-control-zoom a:hover { background: #f0f4f8 !important; }
-.leaflet-control-zoom-in { border-bottom: 1px solid var(--border) !important; border-radius: 12px 12px 0 0 !important; }
-.leaflet-control-zoom-out { border-radius: 0 0 12px 12px !important; }
+.leaflet-control-zoom a:hover { background: var(--ios-gray6) !important; }
+.leaflet-control-zoom-in { border-radius: 12px 12px 0 0 !important; }
+.leaflet-control-zoom-out { border-radius: 0 012px 12px !important; }
 .leaflet-control-attribution {
-  background: rgba(255,255,255,0.8) !important;
-  font-size: 10px !important;
-  border-radius: 8px 0 0 0 !important;
+  background: rgba(255,255,255,0.75) !important; font-size: 10px !important;
+  border-radius: 8px 0 0 0 !important; padding: 2px 6px !important;
 }
 
-/* 自定义地图标记 */
-.fp-marker {
+/* Custom Map Markers */
+.fp-pin {
   display: flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: #fff; border: 2px solid var(--copper);
-  box-shadow: 0 2px 8px rgba(205,127,50,0.4);
-  font-size: 1rem; cursor: pointer;
-  transition: transform 0.2s;
+  width: 32px; height: 40px; position: relative; cursor: pointer;
 }
-.fp-marker:hover { transform: scale(1.2); }
-.fp-marker.silver { border-color: var(--silver); box-shadow: 0 2px 8px rgba(192,192,192,0.4); }
-.fp-marker.gold { border-color: var(--gold); box-shadow: 0 2px 8px rgba(255,215,0,0.4); }
-.fp-marker.silver { border-color: var(--silver); }
-.fp-marker.post-marker {
-  width: 28px; height: 28px; border-radius: 50% 50% 50% 0;
-  background: var(--primary); border: none;
-  transform: rotate(-45deg); box-shadow: 0 2px 8px rgba(30,58,95,0.4);
-  display: flex; align-items: center; justify-content: center;
+.fp-pin::before {
+  content: ''; position: absolute;
+  width: 32px; height: 32px; border-radius: 50% 50% 50% 4px;
+  transform: rotate(-45deg); top: 0; left: 0;
 }
-.fp-marker.post-marker span { transform: rotate(45deg); font-size: 0.75rem; }
-.fp-marker.footprint-marker {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--copper); border: 2px solid #fff;
-  box-shadow: 0 2px 6px rgba(205,127,50,0.5);
+.fp-pin span {
+  position: absolute; top: 4px; left: 50%; transform: translateX(-50%) rotate(45deg);
+  font-size: 14px; z-index: 1;
+}
+.fp-pin.food::before { background: #FF3B30; box-shadow: 02px 8px rgba(255,59,48,0.4); }
+.fp-pin.spot::before { background: #34C759; box-shadow: 0 2px 8px rgba(52,199,89,0.4); }
+.fp-pin.fun::before { background: #5856D6; box-shadow: 0 2px 8px rgba(88,86,214,0.4); }
+
+.fp-footprint {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  cursor: default;
 }
 
-/* 城市地图视图 */
-.city-map-view { width: 100%; height: 100%; display: flex; flex-direction: column; }
-.city-map-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 12px; background: #fff;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  z-index: 10;
+/* Map bottom stats bar */
+.map-stats-bar {
+  position: absolute; bottom: 12px; left: 16px; right: 16px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: 14px; padding: 10px 16px;
+  display: flex; justify-content: space-around; align-items: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  z-index: 1000;
 }
-.city-name-title { font-weight: 700; font-size: 0.95rem; color: var(--primary); }
-.city-map-controls { display: flex; gap: 6px; }
+.map-stats-bar .stat { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--ios-text-secondary); font-weight: 500; }
+.map-stats-bar .stat strong { color: var(--ios-text); font-weight: 600; font-size: 0.9rem; }
+
+/* Map mode pill */
+.map-mode-pill {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 0.75rem; color: var(--ios-text-secondary); font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000;
+}
+
+/* City Map View */
+.city-map-view { width: 100%; height: 100%; display: none; flex-direction: column; }
 .city-map-container { flex: 1; min-height: 0; }
-
-/* 地图底部信息栏 */
-.map-bottom-bar {
-  display: flex; align-items: center; justify-content: space-around;
-  padding: 10px 0; background: #fff;
-  border-top: 1px solid var(--border);
-  font-size: 0.8rem; color: var(--text-secondary);
-  flex-shrink: 0;
+.city-map-header {
+  padding: 10px 16px; background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(20px); display: flex; align-items: center;
+  justify-content: space-between; flex-shrink: 0;
+  border-bottom: 0.5px solid var(--ios-separator);
 }
-.map-bottom-bar span { display: flex; align-items: center; gap: 4px; }
-.locate-btn { color: var(--primary); font-weight: 600; cursor: pointer; }
+.city-map-title { font-size: 1rem; font-weight: 700; color: var(--ios-text); }
+.back-btn { font-size: 0.93rem; color: var(--ios-blue); font-weight: 500; }
 
-/* ---- 社区页 ---- */
-.community-tabs {
-  display: flex; overflow-x: auto;
-  background: var(--bg-white); border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
+/* Map style toggle (iOS pill) */
+.map-style-toggle {
+  display: flex; gap: 4px; background: rgba(118,118,128,0.12);
+  border-radius: 8px; padding: 2px;
 }
-.community-tabs .tab {
-  padding: 10px 14px; font-size: 0.85rem; color: var(--text-secondary);
-  white-space: nowrap; cursor: pointer; border-bottom: 2px solid transparent;
+.map-style-btn {
+  padding: 4px 10px; font-size: 0.72rem; font-weight: 500;
+  color: var(--ios-text-secondary); border-radius: 6px;
+  transition: all 0.2s;
 }
-.community-tabs .tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+.map-style-btn.active { background: var(--ios-card); color: var(--ios-text); }
 
+/* ============================================
+   LISTS (iOS Grouped Table Style)
+   ============================================ */
+.list-group { margin: 0 0 24px; }
+.list-header {
+  padding: 0 16px 6px; font-size: 0.75rem; font-weight: 500;
+  color: var(--ios-text-tertiary); text-transform: uppercase; letter-spacing: 0.04em;
+}
+.list-items {
+  background: var(--ios-card);
+  border-radius: 11px; margin: 0 16px;
+  overflow: hidden;
+}
+.list-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 0.5px solid var(--ios-separator);
+  transition: background 0.15s;
+  cursor: pointer;
+  min-height: 44px;
+}
+.list-item:last-child { border-bottom: none; }
+.list-item:active { background: var(--ios-gray6); }
+.list-item-icon { font-size: 1.2rem; width: 28px; text-align: center; }
+.list-item-content { flex: 1; }
+.list-item-title { font-size: 0.93rem; color: var(--ios-text); font-weight: 500; }
+.list-item-subtitle { font-size: 0.78rem; color: var(--ios-text-tertiary); margin-top: 2px; }
+.list-item-arrow { color: var(--ios-gray3); font-size: 1rem; }
+.list-item-badge {
+  background: var(--ios-red); color: #fff;
+  border-radius: 10px; padding: 2px 7px; font-size: 0.72rem; font-weight: 600;
+}
+
+/* ============================================
+   CARDS (iOS Style)
+   ============================================ */
+.card {
+  background: var(--ios-card); border-radius: 16px;
+  margin: 0 16px 16px;
+  overflow: hidden;
+  box-shadow: var(--ios-shadow);
+}
+.card-img {
+  width: 100%; height: 160px; object-fit: cover;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; background: linear-gradient(135deg, #E8F0FE, #D4E4FD);
+}
+.card-body { padding: 12px 14px; }
+.card-title { font-size: 0.95rem; font-weight: 600; color: var(--ios-text); margin-bottom: 4px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-meta { display: flex; gap: 10px; font-size: 0.75rem; color: var(--ios-text-tertiary); }
+
+/* ============================================
+   POST GRID
+   ============================================ */
 .post-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-  padding: 8px; padding-bottom: 80px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  padding: 12px 16px100px;
 }
-.post-card {
-  background: var(--bg-white); border-radius: 12px;
-  overflow: hidden; cursor: pointer;
-  transition: transform 0.2s;
-}
-.post-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.post-card-img {
-  width: 100%; height: 130px; object-fit: cover;
-  background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
-  display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
-}
-.post-card-body { padding: 8px 10px; }
-.post-card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.post-card-meta { display: flex; gap: 8px; font-size: 0.7rem; color: var(--text-light); }
-.post-card-meta span { display: flex; align-items: center; gap: 2px; }
 
-/* ---- 推文详情 ---- */
-.post-detail-content { padding: 0 0 80px; }
+/* ============================================
+   POST DETAIL
+   ============================================ */
+.post-detail-content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
 .post-detail-img {
-  width: 100%; height: 220px;
-  background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
-  display: flex; align-items: center; justify-content: center; font-size: 4rem;
+  width: 100%; height: 240px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; background: linear-gradient(135deg, #E8F0FE, #C8DCFA);
 }
 .post-detail-body { padding: 16px; }
-.post-detail-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
-.post-detail-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; }
-.post-detail-text { font-size: 0.9rem; line-height: 1.75; color: var(--text); margin-bottom: 16px; }
-.post-detail-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-.tag-chip { background: #EFF6FF; color: var(--primary); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; }
-.post-detail-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-.post-checkins { padding: 0 16px 16px; }
-.checkins-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-.checkins-avatars { display: flex; align-items: center; }
+.post-detail-title { font-size: 1.2rem; font-weight: 700; color: var(--ios-text); line-height: 1.3; margin-bottom: 8px; }
+.post-detail-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.post-detail-meta .meta-chip {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.78rem; color: var(--ios-text-tertiary); font-weight: 500;
+}
+.post-detail-text { font-size: 0.93rem; line-height: 1.65; color: var(--ios-text-secondary); margin-bottom: 12px; }
+.post-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  padding: 4px 10px; background: var(--ios-gray6); color: var(--ios-text-secondary);
+  border-radius: 8px; font-size: 0.75rem; font-weight: 500;
+}
+.divider { height: 0.5px; background: var(--ios-separator); margin: 0; }
+.section-pad { padding: 14px 16px; }
+.section-title { font-size: 0.82rem; font-weight: 600; color: var(--ios-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+.checkin-avatars { display: flex; align-items: center; gap: 0; }
 .checkin-avatar {
-  width: 30px; height: 30px; border-radius: 50%; background: var(--bg);
-  border: 2px solid #fff; margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--ios-gray5); border: 2px solid #fff;
+  margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
 }
 .checkin-avatar:first-child { margin-left: 0; }
-.checkin-count { font-size: 0.8rem; color: var(--text-secondary); margin-left: 8px; }
-.reviews-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; padding: 0 16px; }
-.reviews-container { padding: 0 16px16px; }
-.review-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.checkin-count { font-size: 0.82rem; color: var(--ios-text-tertiary); margin-left: 8px; }
+.review-item { padding: 12px 0; border-bottom: 0.5px solid var(--ios-separator); }
 .review-item:last-child { border-bottom: none; }
 .review-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-.review-user { font-size: 0.8rem; font-weight: 600; }
-.review-rating { font-size: 0.7rem; }
-.review-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
-.no-reviews { padding: 0 16px 16px; font-size: 0.85rem; color: var(--text-light); }
-.post-actions { display: flex; gap: 16px; padding: 12px 16px; border-top: 1px solid var(--border); background: #fff; }
-.action-btn { display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; flex: 1; justify-content: center; }
-.action-btn.liked { color: var(--danger); }
+.review-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--ios-gray5); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+.review-name { font-size: 0.85rem; font-weight: 600; color: var(--ios-text); }
+.review-text { font-size: 0.88rem; color: var(--ios-text-secondary); line-height: 1.5; margin-top: 2px; }
+.post-action-bar {
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 10px 0; background: var(--ios-card);
+  border-top: 0.5px solid var(--ios-separator);
+  position: sticky; bottom: 0;
+}
+.action-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 0.68rem; color: var(--ios-text-tertiary); font-weight: 500;
+  flex: 1; padding: 6px 0; cursor: pointer;
+}
+.action-btn .action-icon { font-size: 1.3rem; }
+.action-btn.liked { color: var(--ios-red); }
 
-/* ---- 发布页 ---- */
+/* ============================================
+   PUBLISH FORM
+   ============================================ */
 .publish-form { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
 .photo-upload {
-  border: 2px dashed var(--border); border-radius: 12px;
-  padding: 28px; display: flex; flex-direction: column; align-items: center; gap: 4px;
-  cursor: pointer; background: var(--bg-white);
+  border: 1.5px dashed var(--ios-gray4); border-radius: 12px;
+  padding: 32px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; background: var(--ios-card);
 }
-.photo-upload span { font-size: 0.95rem; color: var(--text-secondary); }
-.photo-upload small { font-size: 0.75rem; color: var(--text-light); }
-.form-field { background: var(--bg-white); border-radius: 12px; padding: 12px; }
-.form-field input, .form-field textarea, .form-field select {
+.photo-upload span { font-size: 0.93rem; color: var(--ios-text-tertiary); }
+.photo-upload small { font-size: 0.75rem; color: var(--ios-text-tertiary); opacity: 0.7; }
+.form-input {
+  background: var(--ios-card); border-radius: 11px; padding: 14px 16px;
+}
+.form-input input, .form-input textarea, .form-input select {
   width: 100%; border: none; outline: none;
-  font-size: 0.9rem; font-family: inherit; background: transparent; color: var(--text);
-  resize: none;
+  font-size: 0.93rem; font-family: inherit; background: transparent;
+  color: var(--ios-text); resize: none;
 }
-.form-field input::placeholder, .form-field textarea::placeholder { color: var(--text-light); }
-.form-field textarea { min-height: 90px; }
+.form-input input::placeholder, .form-input textarea::placeholder { color: var(--ios-text-tertiary); }
+.form-input textarea { min-height: 100px; }
 .form-row { display: flex; gap: 10px; }
-.form-field.half { flex: 1; }
-.field-label { display: block; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; }
+.form-input.half { flex: 1; }
+.field-label { font-size: 0.78rem; font-weight: 500; color: var(--ios-text-tertiary); margin-bottom: 6px; display: block; }
 
-/* ---- 消息页 ---- */
-.message-tabs {
-  display: flex; background: var(--bg-white); border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.message-tabs .tab {
-  flex: 1; text-align: center; padding: 10px 0;
-  font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;
-  border-bottom: 2px solid transparent;
-}
-.message-tabs .tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
-.message-list { padding: 0 0 80px; }
+/* ============================================
+   MESSAGES
+   ============================================ */
+.message-list { padding: 8px 0 100px; }
 .message-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px; border-bottom: 1px solid var(--border);
-  background: var(--bg-white); cursor: pointer;
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 16px; border-bottom: 0.5px solid var(--ios-separator);
+  background: var(--ios-card); cursor: pointer;
+  transition: background 0.15s;
 }
-.message-item:hover { background: #F8FAFC; }
-.msg-avatar { font-size: 1.5rem; min-width: 40px; text-align: center; }
+.message-item:active { background: var(--ios-gray6); }
+.msg-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--ios-gray5); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
 .msg-body { flex: 1; min-width: 0; }
-.msg-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
-.msg-text { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-.msg-time { font-size: 0.7rem; color: var(--text-light); }
-.msg-action { font-size: 0.8rem; color: var(--primary); white-space: nowrap; }
+.msg-title { font-size: 0.88rem; font-weight: 600; color: var(--ios-text); margin-bottom: 2px; }
+.msg-title .msg-sub { font-weight: 400; color: var(--ios-text-tertiary); }
+.msg-preview { font-size: 0.82rem; color: var(--ios-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.msg-time { font-size: 0.72rem; color: var(--ios-text-tertiary); white-space: nowrap; margin-left: 6px; }
+.msg-action-btn { font-size: 0.82rem; color: var(--ios-blue); font-weight: 500; white-space: nowrap; }
 
-/* ---- 我的页 ---- */
-.profile-section { background: var(--bg-white); padding: 20px 16px; text-align: center; }
-.profile-avatar { font-size: 3rem; margin-bottom: 8px; }
-.profile-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
-.profile-city { font-size: 0.8rem; color: var(--text-secondary); }
+/* ============================================
+   PROFILE
+   ============================================ */
+.profile-header {
+  background: var(--ios-card); padding: 24px 16px 20px;
+  display: flex; flex-direction: column; align-items: center;
+  border-bottom: 0.5px solid var(--ios-separator);
+}
+.profile-avatar {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--ios-blue), var(--ios-indigo));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; color: #fff; margin-bottom: 10px;
+}
+.profile-name { font-size: 1.1rem; font-weight: 700; color: var(--ios-text); margin-bottom: 4px; }
+.profile-subtitle { font-size: 0.82rem; color: var(--ios-text-tertiary); }
 .profile-stats {
   display: grid; grid-template-columns: repeat(4, 1fr);
-  background: var(--bg-white); border-top: 1px solid var(--border);
-  padding: 16px 0;
+  padding: 16px 0; background: var(--ios-card);
 }
-.stat-item { text-align: center; }
-.stat-num { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-.stat-label { font-size: 0.7rem; color: var(--text-light); margin-top: 2px; }
-.city-progress { background: var(--bg-white); padding: 16px; margin-top: 8px; }
-.progress-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; }
+.stat-box { text-align: center; }
+.stat-value { font-size: 1.1rem; font-weight: 700; color: var(--ios-text); }
+.stat-label { font-size: 0.7rem; color: var(--ios-text-tertiary); margin-top: 2px; }
+
+/* ============================================
+   CITY PROGRESS
+   ============================================ */
+.city-progress { padding: 14px 16px; background: var(--ios-card); margin-top: 8px; }
+.progress-title { font-size: 0.82rem; font-weight: 600; color: var(--ios-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
 .progress-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.progress-item .city-name { font-size: 0.8rem; width: 40px; color: var(--text-secondary); }
-.progress-bar { flex: 1; height: 6px; background: var(--border); border-radius: 3px; }
-.progress-fill { height: 100%; background: var(--primary); border-radius: 3px; }
-.progress-count { font-size: 0.7rem; color: var(--text-light); width: 36px; text-align: right; }
-.menu-list { padding: 8px 0 100px; }
-.menu-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px; background: var(--bg-white);
-  border-bottom: 1px solid var(--border); cursor: pointer; font-size: 0.9rem;
-}
-.menu-item:hover { background: #F8FAFC; }
-.menu-arrow { margin-left: auto; color: var(--text-light); font-size: 1.2rem; }
-.menu-item-bottom { color: var(--text-secondary); }
-.menu-item-exit { color: var(--danger); margin-top: 8px; }
+.progress-item:last-child { margin-bottom: 0; }
+.progress-city { font-size: 0.88rem; font-weight: 500; color: var(--ios-text); width: 38px; }
+.progress-track { flex: 1; height: 6px; background: var(--ios-gray5); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; background: var(--ios-blue); }
+.progress-count { font-size: 0.72rem; color: var(--ios-text-tertiary); width: 34px; text-align: right; }
 
-/* ---- 想去清单页 ---- */
-.wishlist-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-  padding: 8px; padding-bottom: 80px;
-}
-
-/* ---- 我的推文页 ---- */
-.my-posts-list { padding: 8px 16px 100px; }
-.my-post-item {
-  background: var(--bg-white); border-radius: 12px;
-  padding: 12px; margin-bottom: 8px; cursor: pointer;
-}
-.my-post-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
-.my-post-meta { display: flex; gap: 12px; font-size: 0.75rem; color: var(--text-secondary); }
-
-/* ---- 底部导航 ---- */
+/* ============================================
+   BOTTOM NAVIGATION (iOS Tab Bar)
+   ============================================ */
 .bottom-nav {
-  display: flex; align-items: flex-end; justify-content: space-around;
-  height: var(--nav-height); padding: 0 0 4px;
-  background: var(--bg-white);
-  border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start;
+  height: var(--nav-height); padding-top: 6px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid rgba(0,0,0,0.15);
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
 }
 .nav-item {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 2px; cursor: pointer; flex: 1; padding: 6px 0;
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 2px; cursor: pointer; padding: 00 24px;
 }
-.nav-item.active .nav-icon { color: var(--primary); }
-.nav-item.active .nav-label { color: var(--primary); }
-.nav-icon { font-size: 1.2rem; color: var(--text-light); }
-.nav-label { font-size: 0.65rem; color: var(--text-light); }
-.nav-item.active .nav-label { color: var(--primary); font-weight: 600; }
-.nav-item-plus { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; flex: none; }
+.nav-icon { font-size: 1.35rem; color: var(--ios-gray2); }
+.nav-label { font-size: 0.62rem; color: var(--ios-gray2); font-weight: 500; }
+.nav-item.active .nav-icon { color: var(--ios-blue); }
+.nav-item.active .nav-label { color: var(--ios-blue); }
 .nav-plus {
-  width: 46px; height: 46px; background: var(--primary);
-  color: #fff; border-radius: 50%;
+  width: 50px; height: 50px; border-radius: 50%;
+  background: var(--ios-blue);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem; font-weight: 700;
+  font-size: 1.8rem; color: #fff; font-weight: 300;
   transform: translateY(-10px);
-  box-shadow: 0 4px 14px rgba(30,58,95,0.35);
+  box-shadow: 0 4px 16px rgba(0,122,255,0.35);
+  flex: none;
 }
-.nav-item:hover .nav-plus { background: var(--primary-light); }
+.nav-item:hover .nav-plus { background: #0070E0; }
 
-/* ---- Demo提示 ---- */
+/* ============================================
+   WISHLIST / MY POSTS GRID
+   ============================================ */
+.wishlist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 16px 100px; }
+.my-posts-list { padding: 8px 16px 100px; }
+.my-post-item {
+  background: var(--ios-card); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer;
+  transition: background 0.15s;
+}
+.my-post-item:active { background: var(--ios-gray6); }
+.my-post-title { font-size: 0.9rem; font-weight: 600; color: var(--ios-text); margin-bottom: 4px; }
+.my-post-meta { display: flex; gap: 10px; font-size: 0.75rem; color: var(--ios-text-tertiary); }
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+.page-pad-top { padding-top: 0; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--ios-text-tertiary); font-size: 0.9rem; }
+.pb-nav { padding-bottom: calc(var(--nav-height) + 10px); }
+
+/* iOS Switch */
+.ios-switch {
+  width: 47px; height: 29px; border-radius: 14.5px;
+  background: var(--ios-gray3); position: relative; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.ios-switch.on { background: var(--ios-green); }
+.ios-switch::after {
+  content: ''; width: 25px; height: 25px; border-radius: 50%;
+  background: #fff; position: absolute; top: 2px; left: 2px;
+  transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.ios-switch.on::after { transform: translateX(18px); }
+
+/* Demo badge */
 body::before {
-  content: '足迹地球 Demo v1.6';
+  content: '足迹地球 · Demo v1.6';
   position: fixed; top: 0; left: 50%; transform: translateX(-50%);
   background: var(--primary); color: #fff;
-  font-size: 0.7rem; padding: 4px 12px; border-radius: 0 0 8px 8px;
+  font-size: 0.7rem; padding: 4px 14px; border-radius: 0 0 10px 10px;
   z-index: 9999;
 }
