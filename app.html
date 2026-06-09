@@ -3,219 +3,269 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>足迹地球 — Demo</title>
+  <title>足迹地球</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
 
-  <div id="app">
+<div id="app">
 
-    <!-- ========== 足迹页 ========== -->
-    <div class="page active" id="page-footprint">
-      <div class="page-header">
-        <span class="logo-text">🌍 足迹地球</span>
-        <div class="header-right">
-          <span class="btn-2d3d active" onclick="toggleMapStyle('2d')">2D</span>
-          <span class="btn-2d3d" onclick="toggleMapStyle('satellite')">卫星</span>
-        </div>
-      </div>
-      <div class="mode-tabs">
-        <span class="tab active" data-mode="footprint">👣 足迹</span>
-        <span class="tab" data-mode="heat">🔥 推荐</span>
-        <span class="tab" data-mode="zone">📍 功能区</span>
-      </div>
-
-      <!-- 地图区域 -->
-      <div class="map-wrapper">
-        <div id="map" class="map-container"></div>
-        <div id="city-map-view" class="city-map-view" style="display:none">
-          <div class="city-map-header">
-            <span class="back-btn" onclick="hideCityMap()">← 返回</span>
-            <span class="city-name-title" id="city-map-title">武汉市</span>
-            <div class="city-map-controls">
-              <span class="btn-2d3d active" onclick="toggleCityMapStyle('street')">街道</span>
-              <span class="btn-2d3d" onclick="toggleCityMapStyle('satellite')">卫星</span>
-            </div>
-          </div>
-          <div id="city-map" class="city-map-container"></div>
-        </div>
-      </div>
-
-      <div class="map-bottom-bar">
-        <span>👣 27</span>
-        <span>🔖 想去5</span>
-        <span>📌 推文 8</span>
-        <span onclick="goToLocation()" class="locate-btn">📍 定位</span>
-      </div>
-    </div>
-
-    <!-- ========== 社区页 ========== -->
-    <div class="page" id="page-community">
-      <div class="page-header">
-        <span class="logo-text">📌 社区</span>
-        <span class="icon-btn">🔍</span>
-      </div>
-      <div class="community-tabs">
-        <span class="tab active" data-cat="全部">全部</span>
-        <span class="tab" data-cat="美食">美食</span>
-        <span class="tab" data-cat="风景">风景</span>
-        <span class="tab" data-cat="娱乐">娱乐</span>
-        <span class="tab" data-cat="我的">我的</span>
-      </div>
-      <div class="post-grid" id="post-grid"></div>
-    </div>
-
-    <!-- ========== 推文详情页 ========== -->
-    <div class="page" id="page-post-detail">
-      <div class="page-header">
-        <span class="back-btn" onclick="showPage('community')">← 返回</span>
-      </div>
-      <div class="post-detail-content" id="post-detail-content"></div>
-    </div>
-
-    <!-- ========== 发布页 ========== -->
-    <div class="page" id="page-publish">
-      <div class="page-header">
-        <span class="cancel-btn" onclick="showPage('footprint')">×取消</span>
-        <span class="page-title">发布推文</span>
-        <span class="publish-btn" onclick="publishPost()">发布</span>
-      </div>
-      <div class="publish-form">
-        <div class="photo-upload" id="photo-upload" onclick="addPhoto()">
-          <span>📷 点击添加图片</span>
-          <small>最多9张</small>
-        </div>
-        <div class="form-field">
-          <input type="text" placeholder="标题（30字以内）" maxlength="30" id="input-title">
-        </div>
-        <div class="form-field">
-          <textarea placeholder="正文内容…分享你的真实体验" maxlength="500" id="input-body"></textarea>
-        </div>
-        <div class="form-row">
-          <div class="form-field half">
-            <span class="field-label">📍 地点</span>
-            <input type="text" placeholder="选择地点" id="input-location">
-          </div>
-          <div class="form-field half">
-            <span class="field-label">🏷 类别</span>
-            <select id="input-category">
-              <option value="美食">美食</option>
-              <option value="风景">风景</option>
-              <option value="娱乐">娱乐</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-field">
-          <span class="field-label">人均消费（选填，元）</span>
-          <input type="number" placeholder="0" id="input-price">
+  <!-- ========== 足迹页 ========== -->
+  <div class="page active" id="page-footprint">
+    <div class="page-header">
+      <span class="header-title">🌍 足迹地球</span>
+      <div class="header-right">
+        <div class="map-style-toggle">
+          <span class="map-style-btn active" onclick="switchStreet()">街道</span>
+          <span class="map-style-btn" onclick="switchSatellite()">卫星</span>
         </div>
       </div>
     </div>
 
-    <!-- ========== 消息页 ========== -->
-    <div class="page" id="page-messages">
-      <div class="page-header">
-        <span class="logo-text">💬 消息</span>
+    <div class="segment-wrap">
+      <div class="segment">
+        <div class="seg-btn active" data-mode="footprint">👣 足迹</div>
+        <div class="seg-btn" data-mode="heat">🔥 推荐</div>
+        <div class="seg-btn" data-mode="zone">📍 功能区</div>
       </div>
-      <div class="message-tabs">
-        <span class="tab active">评价</span>
-        <span class="tab">互动</span>
-        <span class="tab">新粉丝</span>
-        <span class="tab">系统</span>
-      </div>
-      <div class="message-list" id="message-list"></div>
     </div>
 
-    <!-- ========== 我的页 ========== -->
-    <div class="page" id="page-me">
-      <div class="page-header">
-        <span class="logo-text">👤 我的</span>
-        <span class="icon-btn">⚙️</span>
-      </div>
-      <div class="profile-section">
-        <div class="profile-avatar">🧑‍💼</div>
-        <div class="profile-name">用户的卢</div>
-        <div class="profile-city">📍 武汉 · 点亮阶段2</div>
-      </div>
-      <div class="profile-stats">
-        <div class="stat-item"><div class="stat-num" id="stat-cities">3</div><div class="stat-label">点亮城市</div></div>
-        <div class="stat-item"><div class="stat-num" id="stat-footprints">27</div><div class="stat-label">打卡次数</div></div>
-        <div class="stat-item"><div class="stat-num" id="stat-posts">8</div><div class="stat-label">发布推文</div></div>
-        <div class="stat-item"><div class="stat-num" id="stat-likes">156</div><div class="stat-label">获赞数</div></div>
-      </div>
-      <div class="city-progress">
-        <div class="progress-title">城市点亮进度</div>
-        <div class="progress-item">
-          <span class="city-name">武汉</span>
-          <div class="progress-bar"><div class="progress-fill" id="prog-wuhan" style="width:80%"></div></div>
-          <span class="progress-count">8/10</span>
+    <div class="map-wrapper">
+      <div id="map" class="map-container"></div>
+
+      <div id="city-map-view" class="city-map-view">
+        <div class="city-map-header">
+          <span class="back-btn" onclick="hideCityMap()">‹ 返回</span>
+          <span class="city-map-title" id="city-map-title">武汉市</span>
+          <div style="width:60px"></div>
         </div>
-        <div class="progress-item">
-          <span class="city-name">洪湖</span>
-          <div class="progress-bar"><div class="progress-fill" id="prog-honghu" style="width:20%"></div></div>
-          <span class="progress-count">2/10</span>
-        </div>
-        <div class="progress-item">
-          <span class="city-name">荆州</span>
-          <div class="progress-bar"><div class="progress-fill" id="prog-jingzhou" style="width:10%"></div></div>
-          <span class="progress-count">1/10</span>
-        </div>
+        <div id="city-map" class="city-map-container"></div>
       </div>
-      <div class="menu-list">
-        <div class="menu-item" onclick="showPage('wishlist')"><span>🔖</span> 想去清单 <span class="menu-arrow">›</span></div>
-        <div class="menu-item" onclick="showPage('my-posts')"><span>📝</span> 我的推文 <span class="menu-arrow">›</span></div>
-        <div class="menu-item"><span>👣</span> 打卡记录 <span class="menu-arrow">›</span></div>
-        <div class="menu-item"><span>💬</span> 收到的评价 <span class="menu-arrow">›</span></div>
-        <div class="menu-item"><span>🏷</span> 我的标签 <span class="menu-arrow">›</span></div>
-        <div class="menu-item"><span>⚔️</span> 足迹PK <span class="menu-arrow">›</span></div>
-        <div class="menu-item"><span>📊</span> 我的数据 <span class="menu-arrow">›</span></div>
-        <div class="menu-item"><span>❓</span> 帮助与反馈 <span class="menu-arrow">›</span></div>
-        <div class="menu-item menu-item-bottom"><span>ℹ️</span> 关于我们</div>
-        <div class="menu-item menu-item-exit"><span>🚪</span> 退出登录</div>
+
+      <div class="map-stats-bar">
+        <div class="stat">👣 <strong>27</strong></div>
+        <div class="stat">📑 <strong>5</strong></div>
+        <div class="stat">📌 <strong>8</strong></div>
+        <div class="stat" onclick="goToMe()" style="cursor:pointer">📍 定位</div>
       </div>
     </div>
-
-    <!-- ========== 想去清单页 ========== -->
-    <div class="page" id="page-wishlist">
-      <div class="page-header">
-        <span class="back-btn" onclick="showPage('me')">← 返回</span>
-        <span class="page-title">想去清单</span>
-      </div>
-      <div class="wishlist-grid" id="wishlist-grid"></div>
-    </div>
-
-    <!-- ========== 我的推文页 ========== -->
-    <div class="page" id="page-my-posts">
-      <div class="page-header">
-        <span class="back-btn" onclick="showPage('me')">← 返回</span>
-        <span class="page-title">我的推文</span>
-      </div>
-      <div class="my-posts-list" id="my-posts-list"></div>
-    </div>
-
-    <!-- ========== 底部导航 ========== -->
-    <div class="bottom-nav" id="bottom-nav">
-      <div class="nav-item active" onclick="switchTab('footprint')">
-        <span class="nav-icon">🌍</span><span class="nav-label">足迹</span>
-      </div>
-      <div class="nav-item" onclick="switchTab('community')">
-        <span class="nav-icon">📌</span><span class="nav-label">社区</span>
-      </div>
-      <div class="nav-item nav-item-plus" onclick="switchTab('publish')">
-        <span class="nav-plus">+</span>
-      </div>
-      <div class="nav-item" onclick="switchTab('messages')">
-        <span class="nav-icon">💬</span><span class="nav-label">消息</span>
-      </div>
-      <div class="nav-item" onclick="switchTab('me')">
-        <span class="nav-icon">👤</span><span class="nav-label">我的</span>
-      </div>
-    </div>
-
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/js/app.js"></script>
+  <!-- ========== 社区页 ========== -->
+  <div class="page" id="page-community">
+    <div class="page-header">
+      <span class="header-title">📌 社区</span>
+      <div class="header-right">
+        <span class="header-btn">🔍</span>
+      </div>
+    </div>
+    <div class="segment-wrap">
+      <div class="segment community-tabs" style="flex-wrap:nowrap;overflow-x:auto;">
+        <div class="seg-btn active" data-cat="全部">全部</div>
+        <div class="seg-btn" data-cat="美食">🍜 美食</div>
+        <div class="seg-btn" data-cat="风景">🏞 风景</div>
+        <div class="seg-btn" data-cat="娱乐">🎮 娱乐</div>
+        <div class="seg-btn" data-cat="我的">👤 我的</div>
+      </div>
+    </div>
+    <div class="post-grid" id="post-grid"></div>
+  </div>
+
+  <!-- ========== 推文详情页 ========== -->
+  <div class="page" id="page-post-detail">
+    <div class="page-header" style="padding:12px 16px;">
+      <span class="back-btn" onclick="showPage('community')">‹ 返回</span>
+    </div>
+    <div class="post-detail-content" id="post-detail-content" style="padding-bottom:60px"></div>
+  </div>
+
+  <!-- ========== 发布页 ========== -->
+  <div class="page" id="page-publish">
+    <div class="page-header">
+      <span class="back-btn" onclick="showPage('footprint')">取消</span>
+      <span class="header-title">发布推文</span>
+      <span class="header-btn" style="color:var(--ios-blue);font-weight:600" onclick="publishPost()">发布</span>
+    </div>
+    <div class="publish-form">
+      <div class="photo-upload" id="photo-upload" onclick="addPhoto()">
+        <span>📷 点击添加图片</span>
+        <small>最多9张</small>
+      </div>
+      <div class="form-input">
+        <input type="text" placeholder="标题（30字以内）" maxlength="30" id="input-title">
+      </div>
+      <div class="form-input">
+        <textarea placeholder="正文内容…分享你的真实体验" maxlength="500" id="input-body"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-input half">
+          <span class="field-label">📍 地点</span>
+          <input type="text" placeholder="选择地点" id="input-location">
+        </div>
+        <div class="form-input half">
+          <span class="field-label">🏷 类别</span>
+          <select id="input-category" style="font-size:0.93rem;width:100%;border:none;background:transparent;color:var(--ios-text)">
+            <option value="美食">🍜 美食</option>
+            <option value="风景">🏞 风景</option>
+            <option value="娱乐">🎮 娱乐</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-input">
+        <span class="field-label">人均消费（选填，元）</span>
+        <input type="number" placeholder="0" id="input-price">
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 消息页 ========== -->
+  <div class="page" id="page-messages">
+    <div class="page-header">
+      <span class="header-title">💬 消息</span>
+    </div>
+    <div class="segment-wrap">
+      <div class="segment message-tabs">
+        <div class="seg-btn active">评价</div>
+        <div class="seg-btn">互动</div>
+        <div class="seg-btn">新粉丝</div>
+        <div class="seg-btn">系统</div>
+      </div>
+    </div>
+    <div class="message-list" id="message-list"></div>
+  </div>
+
+  <!-- ========== 我的页 ========== -->
+  <div class="page" id="page-me">
+    <div class="profile-header">
+      <div class="profile-avatar">🧑‍💼</div>
+      <div class="profile-name">用户的卢</div>
+      <div class="profile-subtitle">📍 武汉 · 点亮阶段2</div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="stat-box"><div class="stat-value" id="stat-cities">3</div><div class="stat-label">点亮城市</div></div>
+      <div class="stat-box"><div class="stat-value" id="stat-footprints">27</div><div class="stat-label">打卡次数</div></div>
+      <div class="stat-box"><div class="stat-value" id="stat-posts">8</div><div class="stat-label">发布推文</div></div>
+      <div class="stat-box"><div class="stat-value" id="stat-likes">156</div><div class="stat-label">获赞数</div></div>
+    </div>
+
+    <div class="city-progress">
+      <div class="progress-title">城市点亮进度</div>
+      <div class="progress-item">
+        <span class="progress-city">武汉</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-wuhan" style="width:80%"></div></div>
+        <span class="progress-count">8/10</span>
+      </div>
+      <div class="progress-item">
+        <span class="progress-city">洪湖</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-honghu" style="width:20%"></div></div>
+        <span class="progress-count">2/10</span>
+      </div>
+      <div class="progress-item">
+        <span class="progress-city">荆州</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-jingzhou" style="width:10%"></div></div>
+        <span class="progress-count">1/10</span>
+      </div>
+    </div>
+
+    <div class="list-group" style="margin-top:8px">
+      <div class="list-items">
+        <div class="list-item" onclick="showPage('wishlist')">
+          <span class="list-item-icon">📑</span>
+          <div class="list-item-content"><div class="list-item-title">想去清单</div></div>
+          <span class="list-item-arrow">›</span>
+        </div>
+        <div class="list-item" onclick="showPage('my-posts')">
+          <span class="list-item-icon">📝</span>
+          <div class="list-item-content"><div class="list-item-title">我的推文</div></div>
+          <span class="list-item-arrow">›</span>
+        </div>
+        <div class="list-item">
+          <span class="list-item-icon">👣</span>
+          <div class="list-item-content"><div class="list-item-title">打卡记录</div></div>
+          <span class="list-item-arrow">›</span>
+        </div>
+        <div class="list-item">
+          <span class="list-item-icon">🏷</span>
+          <div class="list-item-content"><div class="list-item-title">我的标签</div></div>
+          <span class="list-item-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="list-group">
+      <div class="list-items">
+        <div class="list-item">
+          <span class="list-item-icon">⚙️</span>
+          <div class="list-item-content"><div class="list-item-title">设置</div></div>
+          <span class="list-item-arrow">›</span>
+        </div>
+        <div class="list-item">
+          <span class="list-item-icon">❓</span>
+          <div class="list-item-content"><div class="list-item-title">帮助与反馈</div></div>
+          <span class="list-item-arrow">›</span>
+        </div>
+       <div class="list-item">
+          <span class="list-item-icon">ℹ️</span>
+          <div class="list-item-content"><div class="list-item-title">关于我们</div></div>
+          <span class="list-item-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:0 16px;margin-bottom:100px;">
+      <div class="list-item" style="color:var(--ios-red);border-radius:11px">
+        <span class="list-item-icon">🚪</span>
+        <div class="list-item-content"><div class="list-item-title">退出登录</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 想去清单页 ========== -->
+  <div class="page" id="page-wishlist">
+    <div class="page-header">
+      <span class="back-btn" onclick="showPage('me')">‹ 返回</span>
+      <span class="header-title">📑 想去清单</span>
+    </div>
+    <div class="wishlist-grid" id="wishlist-grid"></div>
+  </div>
+
+  <!-- ========== 我的推文页 ========== -->
+  <div class="page" id="page-my-posts">
+    <div class="page-header">
+      <span class="back-btn" onclick="showPage('me')">‹ 返回</span>
+      <span class="header-title">📝 我的推文</span>
+    </div>
+    <div class="my-posts-list" id="my-posts-list"></div>
+  </div>
+
+  <!-- ========== 底部导航 ========== -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('footprint')">
+      <span class="nav-icon">🌍</span>
+      <span class="nav-label">足迹</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('community')">
+      <span class="nav-icon">📌</span>
+      <span class="nav-label">社区</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('publish')">
+      <div class="nav-plus">+</div>
+    </div>
+    <div class="nav-item" onclick="switchTab('messages')">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">消息</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('me')">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">我的</span>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/js/app.js"></script>
 </body>
 </html>
