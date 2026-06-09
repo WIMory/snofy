@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>足迹地球 — Demo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
@@ -15,51 +16,37 @@
       <div class="page-header">
         <span class="logo-text">🌍 足迹地球</span>
         <div class="header-right">
-          <span class="btn-2d3d active">2D</span>
-          <span class="btn-2d3d">3D</span>
+          <span class="btn-2d3d active" onclick="toggleMapStyle('2d')">2D</span>
+          <span class="btn-2d3d" onclick="toggleMapStyle('satellite')">卫星</span>
         </div>
       </div>
       <div class="mode-tabs">
-        <span class="tab active" data-mode="footprint">足迹</span>
-        <span class="tab" data-mode="heat">推荐</span>
-        <span class="tab" data-mode="zone">功能区</span>
+        <span class="tab active" data-mode="footprint">👣 足迹</span>
+        <span class="tab" data-mode="heat">🔥 推荐</span>
+        <span class="tab" data-mode="zone">📍 功能区</span>
       </div>
-      <div class="globe-container">
-        <div class="globe" id="globe">
-          <div class="globe-inner">
-            <div class="globe-label wuhan">武汉</div>
-            <div class="globe-label honghu">洪湖</div>
-            <div class="globe-label jingzhou">荆州</div>
-            <div class="footprint-dot" style="left:52%;top:48%"></div>
-            <div class="footprint-dot" style="left:55%;top:52%"></div>
-            <div class="footprint-dot" style="left:50%;top:45%"></div>
-            <div class="post-pin" style="left:48%;top:46%">📌</div>
-            <div class="post-pin" style="left:56%;top:50%">📌</div>
-            <div class="heat-zone" style="left:45%;top:40%;width:20%;height:20%"></div>
-          </div>
-          <p class="globe-hint">双击放大 → 城市地图</p>
-        </div>
-        <div class="city-map" id="city-map" style="display:none">
-          <div class="city-header">
+
+      <!-- 地图区域 -->
+      <div class="map-wrapper">
+        <div id="map" class="map-container"></div>
+        <div id="city-map-view" class="city-map-view" style="display:none">
+          <div class="city-map-header">
             <span class="back-btn" onclick="hideCityMap()">← 返回</span>
-            <span class="city-name">武汉</span>
-            <span class="btn-2d3d active">2D</span><span class="btn-2d3d">3D</span>
+            <span class="city-name-title" id="city-map-title">武汉市</span>
+            <div class="city-map-controls">
+              <span class="btn-2d3d active" onclick="toggleCityMapStyle('street')">街道</span>
+              <span class="btn-2d3d" onclick="toggleCityMapStyle('satellite')">卫星</span>
+            </div>
           </div>
-          <div class="city-map-content">
-            <div class="post-pin large" style="left:30%;top:40%">📌<small class="pin-count">23</small></div>
-            <div class="post-pin" style="left:50%;top:35%">📌<small class="pin-count">8</small></div>
-            <div class="post-pin" style="left:65%;top:55%">📌<small class="pin-count">5</small></div>
-            <div class="footprint-dot" style="left:30%;top:40%"></div>
-            <div class="footprint-dot" style="left:31%;top:41%"></div>
-            <div class="footprint-dot" style="left:50%;top:35%"></div>
-            <div class="zone-overlay" style="left:25%;top:35%;width:15%;height:15%"></div>
-          </div>
+          <div id="city-map" class="city-map-container"></div>
         </div>
       </div>
-      <div class="user-stats">
+
+      <div class="map-bottom-bar">
         <span>👣 27</span>
         <span>🔖 想去5</span>
         <span>📌 推文 8</span>
+        <span onclick="goToLocation()" class="locate-btn">📍 定位</span>
       </div>
     </div>
 
@@ -70,25 +57,21 @@
         <span class="icon-btn">🔍</span>
       </div>
       <div class="community-tabs">
-        <span class="tab active">全部</span>
-        <span class="tab">美食</span>
-        <span class="tab">风景</span>
-        <span class="tab">娱乐</span>
-        <span class="tab">我的</span>
+        <span class="tab active" data-cat="全部">全部</span>
+        <span class="tab" data-cat="美食">美食</span>
+        <span class="tab" data-cat="风景">风景</span>
+        <span class="tab" data-cat="娱乐">娱乐</span>
+        <span class="tab" data-cat="我的">我的</span>
       </div>
-      <div class="post-grid" id="post-grid">
-        <!-- Posts rendered by JS -->
-      </div>
+      <div class="post-grid" id="post-grid"></div>
     </div>
 
     <!-- ========== 推文详情页 ========== -->
     <div class="page" id="page-post-detail">
       <div class="page-header">
         <span class="back-btn" onclick="showPage('community')">← 返回</span>
-     </div>
-      <div class="post-detail-content" id="post-detail-content">
-        <!-- Filled by JS -->
       </div>
+      <div class="post-detail-content" id="post-detail-content"></div>
     </div>
 
     <!-- ========== 发布页 ========== -->
@@ -115,7 +98,7 @@
             <input type="text" placeholder="选择地点" id="input-location">
           </div>
           <div class="form-field half">
-            <span class="field-label">🏷 标签</span>
+            <span class="field-label">🏷 类别</span>
             <select id="input-category">
               <option value="美食">美食</option>
               <option value="风景">风景</option>
@@ -124,8 +107,8 @@
           </div>
         </div>
         <div class="form-field">
-          <span class="field-label">人均消费（选填）</span>
-          <input type="number" placeholder="元" id="input-price">
+          <span class="field-label">人均消费（选填，元）</span>
+          <input type="number" placeholder="0" id="input-price">
         </div>
       </div>
     </div>
@@ -141,40 +124,7 @@
         <span class="tab">新粉丝</span>
         <span class="tab">系统</span>
       </div>
-      <div class="message-list" id="message-list">
-        <div class="message-item">
-          <div class="msg-avatar">🍜</div>
-          <div class="msg-body">
-            <div class="msg-title">小明评价了你的打卡</div>
-            <div class="msg-text">"确实好吃，但周末排队要1小时，建议工作日去"</div>
-            <div class="msg-time">3分钟前 · 东湖日落</div>
-          </div>
-          <span class="msg-action">回复</span>
-        </div>
-        <div class="message-item">
-          <div class="msg-avatar">❤️</div>
-          <div class="msg-body">
-            <div class="msg-title">小红的卢点赞了你的推文</div>
-            <div class="msg-text">"汉口老街热干面绝了"</div>
-            <div class="msg-time">10分钟前</div>
-          </div>
-        </div>
-        <div class="message-item">
-          <div class="msg-avatar">👤</div>
-          <div class="msg-body">
-            <div class="msg-title">新粉丝：用户的卢</div>
-            <div class="msg-time">30分钟前 · 关注了你</div>
-          </div>
-        </div>
-       <div class="message-item">
-          <div class="msg-avatar">🏙</div>
-          <div class="msg-body">
-            <div class="msg-title">城市点亮升级！</div>
-            <div class="msg-text">你在武汉打卡满3次，解锁「光晕」效果</div>
-            <div class="msg-time">1小时前</div>
-          </div>
-        </div>
-      </div>
+      <div class="message-list" id="message-list"></div>
     </div>
 
     <!-- ========== 我的页 ========== -->
@@ -187,74 +137,42 @@
         <div class="profile-avatar">🧑‍💼</div>
         <div class="profile-name">用户的卢</div>
         <div class="profile-city">📍 武汉 · 点亮阶段2</div>
-     </div>
+      </div>
       <div class="profile-stats">
-        <div class="stat-item">
-          <div class="stat-num">3</div>
-          <div class="stat-label">点亮城市</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">27</div>
-          <div class="stat-label">打卡次数</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">8</div>
-          <div class="stat-label">发布推文</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">156</div>
-          <div class="stat-label">获赞数</div>
-        </div>
+        <div class="stat-item"><div class="stat-num" id="stat-cities">3</div><div class="stat-label">点亮城市</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-footprints">27</div><div class="stat-label">打卡次数</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-posts">8</div><div class="stat-label">发布推文</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-likes">156</div><div class="stat-label">获赞数</div></div>
       </div>
       <div class="city-progress">
         <div class="progress-title">城市点亮进度</div>
         <div class="progress-item">
           <span class="city-name">武汉</span>
-          <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-wuhan" style="width:80%"></div></div>
           <span class="progress-count">8/10</span>
         </div>
         <div class="progress-item">
           <span class="city-name">洪湖</span>
-          <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-honghu" style="width:20%"></div></div>
           <span class="progress-count">2/10</span>
         </div>
         <div class="progress-item">
           <span class="city-name">荆州</span>
-          <div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-jingzhou" style="width:10%"></div></div>
           <span class="progress-count">1/10</span>
         </div>
       </div>
       <div class="menu-list">
-        <div class="menu-item" onclick="showPage('wishlist')">
-          <span>🔖</span> 想去清单 <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item" onclick="showPage('my-posts')">
-          <span>📝</span> 我的推文 <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item">
-          <span>👣</span> 打卡记录 <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item">
-          <span>💬</span> 收到的评价 <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item">
-          <span>🏷</span> 我的标签 <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item">
-          <span>⚔️</span> 足迹PK <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item">
-          <span>📊</span> 我的数据 <span class="menu-arrow">›</span>
-        </div>
-        <div class="menu-item">
-          <span>❓</span> 帮助与反馈 <span class="menu-arrow">›</span>
-        </div>
-       <div class="menu-item menu-item-bottom">
-          <span>ℹ️</span> 关于我们
-        </div>
-        <div class="menu-item menu-item-exit">
-          <span>🚪</span> 退出登录
-        </div>
+        <div class="menu-item" onclick="showPage('wishlist')"><span>🔖</span> 想去清单 <span class="menu-arrow">›</span></div>
+        <div class="menu-item" onclick="showPage('my-posts')"><span>📝</span> 我的推文 <span class="menu-arrow">›</span></div>
+        <div class="menu-item"><span>👣</span> 打卡记录 <span class="menu-arrow">›</span></div>
+        <div class="menu-item"><span>💬</span> 收到的评价 <span class="menu-arrow">›</span></div>
+        <div class="menu-item"><span>🏷</span> 我的标签 <span class="menu-arrow">›</span></div>
+        <div class="menu-item"><span>⚔️</span> 足迹PK <span class="menu-arrow">›</span></div>
+        <div class="menu-item"><span>📊</span> 我的数据 <span class="menu-arrow">›</span></div>
+        <div class="menu-item"><span>❓</span> 帮助与反馈 <span class="menu-arrow">›</span></div>
+        <div class="menu-item menu-item-bottom"><span>ℹ️</span> 关于我们</div>
+        <div class="menu-item menu-item-exit"><span>🚪</span> 退出登录</div>
       </div>
     </div>
 
@@ -264,9 +182,7 @@
         <span class="back-btn" onclick="showPage('me')">← 返回</span>
         <span class="page-title">想去清单</span>
       </div>
-      <div class="wishlist-grid" id="wishlist-grid">
-        <!-- Filled by JS -->
-      </div>
+      <div class="wishlist-grid" id="wishlist-grid"></div>
     </div>
 
     <!-- ========== 我的推文页 ========== -->
@@ -275,36 +191,31 @@
         <span class="back-btn" onclick="showPage('me')">← 返回</span>
         <span class="page-title">我的推文</span>
       </div>
-      <div class="my-posts-list" id="my-posts-list">
-        <!-- Filled by JS -->
-      </div>
+      <div class="my-posts-list" id="my-posts-list"></div>
     </div>
 
     <!-- ========== 底部导航 ========== -->
     <div class="bottom-nav" id="bottom-nav">
       <div class="nav-item active" onclick="switchTab('footprint')">
-        <span class="nav-icon">🌍</span>
-        <span class="nav-label">足迹</span>
+        <span class="nav-icon">🌍</span><span class="nav-label">足迹</span>
       </div>
       <div class="nav-item" onclick="switchTab('community')">
-        <span class="nav-icon">📌</span>
-        <span class="nav-label">社区</span>
+        <span class="nav-icon">📌</span><span class="nav-label">社区</span>
       </div>
       <div class="nav-item nav-item-plus" onclick="switchTab('publish')">
         <span class="nav-plus">+</span>
       </div>
       <div class="nav-item" onclick="switchTab('messages')">
-        <span class="nav-icon">💬</span>
-        <span class="nav-label">消息</span>
-     </div>
+        <span class="nav-icon">💬</span><span class="nav-label">消息</span>
+      </div>
       <div class="nav-item" onclick="switchTab('me')">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">我的</span>
+        <span class="nav-icon">👤</span><span class="nav-label">我的</span>
       </div>
     </div>
 
   </div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
